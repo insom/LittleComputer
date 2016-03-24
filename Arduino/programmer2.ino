@@ -99,6 +99,8 @@ void disownBus() {
 void dumpRam() {
   assertBus();
 
+  Serial.println();
+
   for(int i = 0; i < 256; i++) {
     int o = readByte(i);
     if(i % 16 == 0) {
@@ -120,6 +122,7 @@ void dumpRam() {
 void zeroRam() {
   assertBus();
 
+  pinMode(WE_, OUTPUT);
   for(int i = 0; i < 256; i++) {
     writeByte(i, 0);
   }
@@ -130,12 +133,27 @@ void zeroRam() {
 void loadRam() {
   assertBus();
 
+  pinMode(WE_, OUTPUT);
   for(int i = 0; i < RAM_LENGTH; i++) {
     writeByte(i, ram[i]);
   }
 
   disownBus();
 }
+
+void pokeRam() {
+  int address, data;
+  assertBus();
+
+  pinMode(WE_, OUTPUT);
+
+  address = Serial.parseInt();
+  data = Serial.parseInt();
+  writeByte(address, data);
+
+  disownBus();
+}
+
 
 void setup() {
   /* Set every port to OUTPUT and bring them HIGH. WE, CE and OE are active
@@ -172,6 +190,9 @@ void loop() {
       break;
     case 'l':
       loadRam();
+      break;
+    case 'o':
+      pokeRam();
       break;
   }
 }
