@@ -84,7 +84,9 @@ unsigned char readByte(int address) {
 }
 
 void assertBus() {
+  pinMode(CE_, OUTPUT);
   pinMode(OE_, OUTPUT);
+  digitalWrite(CE_, LOW);
   setPinsMode(OUTPUT, data_pins);
   setPinsMode(OUTPUT, address_pins);
 }
@@ -92,8 +94,9 @@ void assertBus() {
 void disownBus() {
   setPinsMode(INPUT, data_pins);
   setPinsMode(INPUT, address_pins);
-  pinMode(OE_, INPUT);
-  pinMode(WE_, INPUT);
+  pinMode(OE_, INPUT_PULLUP);
+  pinMode(WE_, INPUT_PULLUP);
+  pinMode(CE_, INPUT_PULLUP);
 }
 
 void dumpRam() {
@@ -165,7 +168,6 @@ void setup() {
   }
 
   /* Enable the RAM and start the serial port up. */
-  digitalWrite(CE_, LOW);
   Serial.begin(9600);
   Serial.println("SETUP");
 
